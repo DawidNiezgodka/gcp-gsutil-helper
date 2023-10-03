@@ -7,9 +7,9 @@ async function run() {
     const storage = new Storage()
 
     // Get inputs from action
-    const bucketName = core.getInput('bucket-name')
-    const filePath = core.getInput('file-path')
-    const destinationName = core.getInput('destination-name')
+    const bucketName = core.getInput('bucket_name')
+    const filePath = core.getInput('file_path')
+    const destinationName = core.getInput('destination_name')
 
     const bucket = storage.bucket(bucketName)
 
