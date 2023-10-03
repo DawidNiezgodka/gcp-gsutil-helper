@@ -45425,7 +45425,7 @@ module.exports = Queue;
 /***/ }),
 
 /***/ 1713:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186)
 const { Storage } = __nccwpck_require__(8174)
@@ -45462,7 +45462,9 @@ async function run() {
   }
 }
 
-run()
+module.exports = {
+  run
+}
 
 
 /***/ }),
