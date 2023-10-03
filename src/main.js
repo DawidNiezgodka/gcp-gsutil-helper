@@ -1,30 +1,36 @@
 const core = require('@actions/core')
-const { wait } = require('./wait')
+const { Storage } = require('@google-cloud/storage')
 
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
 async function run() {
   try {
-    const ms = core.getInput('milliseconds', { required: true })
+    // Initialize Google Cloud Storage
+    const storage = new Storage()
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    // Get inputs from action
+    const bucketName = core.getInput('bucket-name')
+    const filePath = core.getInput('file-path')
+    const destinationName = core.getInput('destination-name')
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const bucket = storage.bucket(bucketName)
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    // Check if file already exists in the bucket
+    const [exists] = await bucket.file(destinationName).exists()
+    core.debug(`File existence check completed. Exists: ${exists}`)
+
+    if (exists) {
+      // Delete the existing file
+      await bucket.file(destinationName).delete()
+      core.debug(`Deleted existing file: ${destinationName}`)
+    }
+
+    // Upload the new file
+    await bucket.upload(filePath, {
+      destination: destinationName
+    })
+    core.debug(`Uploaded file: ${filePath} as ${destinationName}`)
   } catch (error) {
-    // Fail the workflow run if an error occurs
-    core.setFailed(error.message)
+    core.setFailed(`Action failed with error: ${error}`)
   }
 }
 
-module.exports = {
-  run
-}
+run()
