@@ -45437,8 +45437,8 @@ async function run() {
 
     // Get inputs from action
     const bucketName = core.getInput('bucket_name')
-    const filePath = core.getInput('file_path')
-    const destinationName = core.getInput('destination_name')
+    const filePath = core.getInput('local_file_path')
+    const destinationName = core.getInput('destination_path')
 
     const bucket = storage.bucket(bucketName)
 
